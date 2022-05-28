@@ -26,7 +26,7 @@ public static class EndpointDefinitionExtensions
 			endpointDefinition.DefineServices(services);
 		}
 
-		services.AddSingleton(endpointDefinition as IReadOnlyCollection<IEndpointDefinition>);
+		services.AddSingleton(endpointDefinitions as IReadOnlyCollection<IEndpointDefinition>);
 	}
 
 	public static void UseEndpointDefinitions(this WebApplication app)

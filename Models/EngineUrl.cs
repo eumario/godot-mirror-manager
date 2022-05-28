@@ -8,20 +8,18 @@ namespace Gmm.Models;
 
 public class EngineUrl
 {
-	// Id: This Id for this entry
-	public Guid Id { get; set; } = Guid.NewGuid();
-
-	// VersionId: Id for the Parent Version structure for the release of Godot, EG: 3.4, 3.4.1, 3.4.2, etc, etc
-	public Guid VersionId { get; set; } = Guid.NewGuid();
+	public string Version { get; set; } = "";
+	public string BaseLocation { get; set; } = "";
 
 	// List of URL parts that will get the OS Specific release of the Godot Engine
 	// Example: "3.4.1/rc2/Godot_v3.4.1-rc2_osx.universal.zip" <-- OSX_64/OSX_arm64
-	public string OSX_64 { get; set; } = "";
-	public string OSX_arm64 { get; set; } = "";
-	public string Windows_32 { get; set; } = "";
-	public string Windows_64 { get; set; } = "";
-	public string X11_32 { get; set; } = "";
-	public string X11_64 { get; set; } = "";
+	public string OSX32 { get; set; } = "";
+	public string OSX64 { get; set; } = "";
+	public string OSXarm64 { get; set; } = "";
+	public string Win32 { get; set; } = "";
+	public string Win64 { get; set; } = "";
+	public string X1132 { get; set; } = "";
+	public string X1164 { get; set; } = "";
 	public string Source { get; set; } = "";
 
 	// List of Tags associated with this release, such as "alpha", "beta", "rc", "mono" and empty means Official

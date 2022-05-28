@@ -1,4 +1,6 @@
 using Gmm.SimpleMinimal;
+using Hangfire;
+using Hangfire.LiteDB;
 
 namespace Gmm.Endpoints;
 
