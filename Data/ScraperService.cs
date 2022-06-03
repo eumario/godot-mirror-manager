@@ -1,6 +1,7 @@
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 using GodotMirrorManager.Models;
+using Hangfire;
 
 namespace GodotMirrorManager.Data;
 
@@ -10,15 +11,17 @@ public class ScraperService : IScraperService
 	private readonly ILiteCollection<EngineUrl> _engineTable;
 	private readonly ILiteCollection<MirrorSite> _mirrorTable;
 	private readonly ILogger<ScraperService> _logger;
+	private readonly IFSScraperService _fsScraper;
 	private readonly Regex VersionMatch = new Regex(@"\d+(?:\.\d+)+");
 
-	public ScraperService(IOptions<GmmDatabaseSettings> options, ILogger<ScraperService> logger)
+	public ScraperService(IOptions<GmmDatabaseSettings> options, IFSScraperService fsScraper, ILogger<ScraperService> logger)
 	{
 		_logger = logger;
 		_logger.LogInformation("Initializing Scraper Services.");
 		_db = Database.CreateDatabase(options.Value.ConnectionString);
 		_engineTable = _db.GetCollection<EngineUrl>(options.Value.EngineUrlCollectionName);
 		_mirrorTable = _db.GetCollection<MirrorSite>(options.Value.MirrorSiteCollectionName);
+		_fsScraper = fsScraper;
 	}
 
 	bool IsVersionStored(string version)
@@ -152,6 +155,12 @@ public class ScraperService : IScraperService
 			_engineTable.InsertBulk(found);
 			_db.Checkpoint();
 		}
+
+		_logger.LogInformation("Scheduling Filesize Scrapper in 2 minutes...");
+		BackgroundJob.Schedule(
+			() => _fsScraper.UpdateFileSizes(),
+			TimeSpan.FromMinutes(2)
+		);
 
 		_logger.LogInformation("Scraping completed.");
 	}

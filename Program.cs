@@ -16,4 +16,4 @@ app.MapGet("/", () => "Godot Mirror Manager!");
 app.UseEndpointDefinitions();
 
 // Let's get to running!
-app.Run();
+app.Run("http://localhost:7000");

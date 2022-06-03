@@ -19,5 +19,14 @@ public class EngineUrl
 	public string Linux64 { get; set; } = string.Empty;
 	public string Source { get; set; } = string.Empty;
 
+	public Int32 OSX32_Size { get; set; } = 0;
+	public Int32 OSX64_Size { get; set; } = 0;
+	public Int32 OSXarm64_Size { get; set; } = 0;
+	public Int32 Win32_Size { get; set; } = 0;
+	public Int32 Win64_Size { get; set; } = 0;
+	public Int32 Linux32_Size { get; set; } = 0;
+	public Int32 Linux64_Size { get; set; } = 0;
+	public Int32 Source_Size { get; set; } = 0;
+
 	public List<string> Tags { get; set; } = new();
 }

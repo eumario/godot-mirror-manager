@@ -28,6 +28,12 @@ public class HangfireEndpointDefintiion : IEndpointDefinition
 			methodCall: () => app.Services.GetRequiredService<IScraperService>().ScrapeSites(),
 			cronExpression: Cron.Hourly
 		);
+
+		// RecurringJob.AddOrUpdate(
+		// 	recurringJobId: "filesizeScrape",
+		// 	methodCall: () => app.Services.GetRequiredService<IFSScraperService>().UpdateFileSizes(),
+		// 	cronExpression: Cron.Hourly
+		// );
 	}
 
 	public void DefineServices(IServiceCollection services)
