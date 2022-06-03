@@ -55,14 +55,6 @@ public class FSScraperService : IFSScraperService
 
 		foreach(EngineUrl url in results) {
 			bool updated = false;
-			Console.WriteLine($"{url.Version} OSX32: {url.OSX32}");
-			Console.WriteLine($"{url.Version} OSX64: {url.OSX64}");
-			Console.WriteLine($"{url.Version} OSXarm64: {url.OSXarm64}");
-			Console.WriteLine($"{url.Version} Win32: {url.Win32}");
-			Console.WriteLine($"{url.Version} Win64: {url.Win64}");
-			Console.WriteLine($"{url.Version} Linux32: {url.Linux32}");
-			Console.WriteLine($"{url.Version} Linux64: {url.Linux64}");
-			Console.WriteLine($"{url.Version} Source: {url.Source}");
 			if (url.OSX32_Size == 0 && !String.IsNullOrEmpty(url.OSX32)) {
 				var size = await GetFileSize(url.BaseLocation, url.OSX32);
 
