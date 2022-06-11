@@ -72,7 +72,7 @@ public class ScraperService : IScraperService
 		{
 			List<string> ltags = new List<string>();
 			if (link.InnerText.StartsWith("rc"))
-				ltags = new List<string>(tags) { "rc", "beta" };
+				ltags = new List<string>(tags) { "rc" };
 			if (link.InnerText.StartsWith("beta"))
 				ltags = new List<string>(tags) { "beta" };
 			if (link.InnerText.StartsWith("alpha"))
