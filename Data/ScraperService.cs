@@ -119,7 +119,7 @@ public class ScraperService : IScraperService
 		{
 			if (site.LastUpdated + TimeSpan.FromHours(site.UpdateInterval) <= DateTime.UtcNow)
 			{
-				mirrorScrapped += 1;
+				mirrorScrapped++;
 				_logger.LogInformation($"Scrapping site {site.Name} [{site.BaseUrl}]");
 				int nurls = 0;
 				Dictionary<string, string>? urls = GatherVersions(site);
@@ -156,7 +156,7 @@ public class ScraperService : IScraperService
 			_db.Checkpoint();
 		}
 
-		_logger.LogInformation("Scheduling Filesize Scrapper in 2 minutes...");
+		_logger.LogInformation("Scheduling Filesize Scraper in 2 minutes...");
 		BackgroundJob.Schedule(
 			() => _fsScraper.UpdateFileSizes(),
 			TimeSpan.FromMinutes(2)

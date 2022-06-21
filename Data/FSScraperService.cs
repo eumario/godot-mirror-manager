@@ -1,5 +1,6 @@
 using System.Net.Http;
 using GodotMirrorManager.Models;
+using Hangfire;
 
 namespace GodotMirrorManager.Data;
 
@@ -10,15 +11,17 @@ public class FSScraperService : IFSScraperService
 	private readonly ILiteDatabase _db;
 	private readonly ILiteCollection<EngineUrl> _engineTable;
 	private readonly ILogger<FSScraperService> _logger;
+	private readonly ILatestVersionScraper _lvScraper;
 
 	private int requestCount = 0;
 
-	public FSScraperService(IOptions<GmmDatabaseSettings> options, ILogger<FSScraperService> logger)
+	public FSScraperService(IOptions<GmmDatabaseSettings> options, ILatestVersionScraper lvScraper, ILogger<FSScraperService> logger)
 	{
 		_logger = logger;
 		_logger.LogInformation("Initializing FileSize Scraper Service");
 		_db = Database.CreateDatabase(options.Value.ConnectionString);
 		_engineTable = _db.GetCollection<EngineUrl>(options.Value.EngineUrlCollectionName);
+		_lvScraper = lvScraper;
 	}
 
 	internal async Task<int> GetFileSize(string url, string file) {
@@ -125,6 +128,12 @@ public class FSScraperService : IFSScraperService
 		}
 
 		_db.Checkpoint();
+
+		_logger.LogInformation("Scheduling Latest Version Scraper in 2 minutes...");
+		BackgroundJob.Schedule(
+			() => _lvScraper.UpdateLatestVersions(),
+			TimeSpan.FromMinutes(2)
+		);
 		
 		_logger.LogInformation($"Updated {updatedUrls.Count()} out of {results.Count()} urls with File Size information. ({requestCount} requests made)");
 	}
