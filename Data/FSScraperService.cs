@@ -55,8 +55,10 @@ public class FSScraperService : IFSScraperService
 								(x.Linux64 != "" && x.Linux64_Size == 0) ||
 								(x.Source != "" && x.Source_Size == 0)).Select(x => x).ToList<EngineUrl>();
 		_logger.LogInformation($"Found {results.Count()} urls that need updated");
-
+		int curUrl = 0;
 		foreach(EngineUrl url in results) {
+			curUrl++;
+			_logger.LogDebug("Checking url {0}/{1}...", curUrl, results.Count);
 			bool updated = false;
 			if (url.OSX32_Size == 0 && !String.IsNullOrEmpty(url.OSX32)) {
 				var size = await GetFileSize(url.BaseLocation, url.OSX32);

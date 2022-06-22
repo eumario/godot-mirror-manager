@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Semver;
 
 namespace GodotMirrorManager.Models;
 
@@ -23,8 +24,8 @@ public class LatestVersion
 	public EngineUrl? MonoBeta { get; set; }
 	public EngineUrl? MonoReleaseCandidate { get; set; }
 
-	public Version GetVersion(List<string> tags) {
-		Version? vers = null;
+	public SemVersion GetVersion(List<string> tags) {
+		SemVersion? vers = null;
 		EngineUrl? matchUrl = null;
 
 		if (tags.Count == 0) { // Standard Version
@@ -49,11 +50,9 @@ public class LatestVersion
 				matchUrl = MonoReleaseCandidate;
 		}
 		if (matchUrl == null)
-			vers = new Version("0.0");
-		else if (matchUrl.Version.Contains("-"))
-			vers = new Version(matchUrl.Version.Split("-")[0]);
+			vers = SemVersion.Parse("0.0", SemVersionStyles.Any);
 		else
-			vers = new Version(matchUrl.Version);
+			vers = SemVersion.Parse(matchUrl.Version,SemVersionStyles.Any);
 
 		return vers;
 	}
@@ -71,11 +70,11 @@ public class LatestVersion
 			else if (url.Tags[0] == "rc")
 				ReleaseCandidate = url;
 		} else {
-			if (url.Tags[1] == "alpha")
+			if (url.Tags[0] == "alpha")
 				MonoAlpha = url;
-			else if (url.Tags[1] == "beta")
+			else if (url.Tags[0] == "beta")
 				MonoBeta = url;
-			else if (url.Tags[1] == "rc")
+			else if (url.Tags[0] == "rc")
 				MonoReleaseCandidate = url;
 		}
 	}

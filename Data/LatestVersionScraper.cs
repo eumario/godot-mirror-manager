@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GodotMirrorManager.Models;
+using Semver;
 
 namespace GodotMirrorManager.Data;
 
@@ -30,20 +31,25 @@ public class LatestVersionScraper : ILatestVersionScraper
 		int updatedVersions = 0;
 		_logger.LogInformation("Starting check for latest versions...");
 		foreach(MirrorSite site in _mirrorTable.FindAll()) {
-			LatestVersion lv = _latestVersionTable.FindAll().Where(x => x.MirrorId == site.Id).FirstOrDefault(new LatestVersion());
+			LatestVersion lv = _latestVersionTable.FindAll().Where(x => x.MirrorId == site.Id).FirstOrDefault(new LatestVersion() { MirrorId = site.Id });
 
 			if (lv.LastUpdated + TimeSpan.FromHours(site.UpdateInterval) <= DateTime.UtcNow) {
 				mirrorLatestVersions++;
 				_logger.LogInformation($"Checking for latest version for {site.Name} [{site.BaseUrl}]");
 				foreach(EngineUrl eurl in _engineUrlTable.FindAll().Where(x => x.MirrorId == site.Id)) {
-					Version ever = new Version(eurl.Version.Contains("-") ? eurl.Version.Split("-")[0] : eurl.Version);
-					Version lver = lv.GetVersion(eurl.Tags);
-					if (ever > lver) {
-						lv.SetVersion(eurl);
-						updatedVersions++;
+					try {
+						SemVersion ever = SemVersion.Parse(eurl.Version,SemVersionStyles.Any);
+						SemVersion lver = lv.GetVersion(eurl.Tags);
+						if (ever > lver) {
+							lv.SetVersion(eurl);
+							updatedVersions++;
+						}
+					} catch(Exception ex){
+						_logger.LogWarning($"Exception: {ex.Message}");
 					}
 				}
 				lv.LastUpdated = DateTime.UtcNow;
+				_logger.LogDebug("Current ID of LV: {0}",lv.Id);
 				if (lv.Id != 0)
 					_latestVersionTable.Update(lv);
 				else

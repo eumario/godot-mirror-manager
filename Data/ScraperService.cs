@@ -132,13 +132,13 @@ public class ScraperService : IScraperService
 
 				foreach (string vers in urls.Keys)
 				{
-					_logger.LogInformation($"[{site.Name}] Found Version: {vers}");
+					_logger.LogDebug($"[{site.Name}] Found Version: {vers}");
 					var eurls = GetUrls(site, vers, urls[vers], new List<string>());
 					if (eurls != null)
 					{
 						nurls += eurls.Count;
 						found.AddRange(eurls);
-						_logger.LogInformation($"[{site.Name}] Found {eurls.Count} new links.");
+						_logger.LogDebug($"[{site.Name}] Found {eurls.Count} new links.");
 					}
 				}
 				_logger.LogInformation($"[{site.Name}] Found {nurls} new links total.");

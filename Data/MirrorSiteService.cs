@@ -15,6 +15,15 @@ public class MirrorSiteService : IMirrorSiteService, IDisposable
 		_logger.LogInformation("Initializing Mirror Site Services.");
 		_db = Database.CreateDatabase(options.Value.ConnectionString);
 		_mirrors = _db.GetCollection<MirrorSite>(options.Value.MirrorSiteCollectionName);
+
+		if (_mirrors.FindAll().ToList().Count == 0) {
+			_mirrors.Insert(new MirrorSite() {
+				Name = "Tuxfamily",
+				BaseUrl = "https://downloads.tuxfamily.org/godotengine/",
+				UpdateInterval = 12,
+				LastUpdated = DateTime.UtcNow.AddDays(-1)
+			});
+		}
 	}
 
 	public List<MirrorSite> Get() => _mirrors.FindAll().ToList();
