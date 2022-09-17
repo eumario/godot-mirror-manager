@@ -50,14 +50,15 @@ public class ScraperService : IScraperService
 
 		current.OSX32 = zips.Where(href => href.EndsWith("osx32.zip")).FirstOrDefault("");
 		current.OSX64 = zips.Where(href => href.EndsWith("osx.universal.zip") ||
+		                            href.EndsWith("macos.universal.zip") ||
 									href.EndsWith("osx64.zip") ||
 									href.EndsWith("osx.64.zip") ||
 									href.EndsWith("osx.fat.zip")).FirstOrDefault("");
 		current.OSXarm64 = current.OSX64;
 		current.Win32 = zips.Where(href => href.EndsWith("win_32.zip") || href.EndsWith("win32.zip") || href.EndsWith("win32.exe.zip")).FirstOrDefault("");
 		current.Win64 = zips.Where(href => href.EndsWith("win_64.zip") || href.EndsWith("win64.zip") || href.EndsWith("win64.exe.zip")).FirstOrDefault("");
-		current.Linux32 = zips.Where(href => href.EndsWith("x11_32.zip") || href.EndsWith("linux_32.zip") || href.EndsWith("x11.32.zip") || href.EndsWith("linux.32.zip")).FirstOrDefault("");
-		current.Linux64 = zips.Where(href => href.EndsWith("x11_64.zip") || href.EndsWith("linux_64.zip") || href.EndsWith("x11.64.zip") || href.EndsWith("linux.64.zip")).FirstOrDefault("");
+		current.Linux32 = zips.Where(href => href.EndsWith("x11_32.zip") || href.EndsWith("linux_x86_32.zip") || href.EndsWith("linux_32.zip") || href.EndsWith("x11.32.zip") || href.EndsWith("linux.32.zip")).FirstOrDefault("");
+		current.Linux64 = zips.Where(href => href.EndsWith("x11_64.zip") || href.EndsWith("linux_x86_64.zip") || href.EndsWith("linux_64.zip") || href.EndsWith("x11.64.zip") || href.EndsWith("linux.64.zip")).FirstOrDefault("");
 		current.Source = links.Where(link => link.InnerText.EndsWith(".tar.xz")).Select(links => links.Attributes["href"].Value).FirstOrDefault("");
 
 		if (!(current.OSX64 == "" && current.Win64 == "" && current.Linux64 == "") && !IsVersionStored(version))
